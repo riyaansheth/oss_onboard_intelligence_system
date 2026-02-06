@@ -6,7 +6,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.json({ status: "RepoMentor AI backend running" });
+  res.json({ status: "server is working" });
 });
 
 app.post("/analyze", (req, res) => {
