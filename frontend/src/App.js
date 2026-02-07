@@ -3,17 +3,35 @@ import axios from "axios";
 
 function App() {
   const [repoUrl, setRepoUrl] = useState("");
-  const [response, setResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [repoData, setRepoData] = useState(null);
 
   const analyzeRepo = async () => {
-    const res = await axios.post("http://localhost:5000/analyze", {
-      repoUrl
-    });
-    setResponse(res.data);
+    if (!repoUrl) {
+      setError("Please enter a repository URL");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setError("");
+      setRepoData(null);
+
+      const response = await axios.post("http://localhost:5000/analyze", {
+        repoUrl
+      });
+
+      setRepoData(response.data);
+    } catch (err) {
+      setError("Failed to analyze repository");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ padding: "40px" }}>
+    <div style={{ padding: "40px", fontFamily: "Arial, sans-serif" }}>
       <h1>OSS Onboard Intelligence System</h1>
 
       <input
@@ -21,14 +39,40 @@ function App() {
         placeholder="Enter GitHub repository URL"
         value={repoUrl}
         onChange={(e) => setRepoUrl(e.target.value)}
-        style={{ width: "400px", padding: "10px" }}
+        style={{
+          width: "420px",
+          padding: "10px",
+          marginRight: "10px"
+        }}
       />
 
-      <br /><br />
+      <button onClick={analyzeRepo}>Analyze</button>
 
-      <button onClick={analyzeRepo}>Analyze github repository</button>
+      {loading && <p>Analyzing repository...</p>}
 
-      <pre>{JSON.stringify(response, null, 2)}</pre>
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {repoData && (
+        <div style={{ marginTop: "30px" }}>
+          <h2>{repoData.name}</h2>
+          <p>{repoData.description}</p>
+
+          <ul>
+            <li><strong>Primary Language:</strong> {repoData.language}</li>
+            <li><strong>Stars:</strong> {repoData.stars}</li>
+            <li><strong>Forks:</strong> {repoData.forks}</li>
+            <li><strong>Open Issues:</strong> {repoData.openIssues}</li>
+          </ul>
+
+          <a
+            href={repoData.url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            View Repository on GitHub
+          </a>
+        </div>
+      )}
     </div>
   );
 }
