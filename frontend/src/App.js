@@ -26,7 +26,7 @@ function App() {
 
       <br /><br />
 
-      <button onClick={analyzeRepo}>Analyze Repository</button>
+      <button onClick={analyzeRepo}>Analyze github repository</button>
 
       <pre>{JSON.stringify(response, null, 2)}</pre>
     </div>
