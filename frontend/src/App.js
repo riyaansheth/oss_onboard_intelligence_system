@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import axios from "axios";
 
 function App() {
+  const [repoUrl, setRepoUrl] = useState("");
+  const [response, setResponse] = useState(null);
+
+  const analyzeRepo = async () => {
+    const res = await axios.post("http://localhost:5000/analyze", {
+      repoUrl
+    });
+    setResponse(res.data);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{ padding: "40px" }}>
+      <h1>OSS Onboard Intelligence System</h1>
+
+      <input
+        type="text"
+        placeholder="Enter GitHub repository URL"
+        value={repoUrl}
+        onChange={(e) => setRepoUrl(e.target.value)}
+        style={{ width: "400px", padding: "10px" }}
+      />
+
+      <br /><br />
+
+      <button onClick={analyzeRepo}>Analyze Repository</button>
+
+      <pre>{JSON.stringify(response, null, 2)}</pre>
     </div>
   );
 }
