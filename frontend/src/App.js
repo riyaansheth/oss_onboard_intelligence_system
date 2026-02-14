@@ -49,7 +49,6 @@ function App() {
       <button onClick={analyzeRepo}>Analyze</button>
 
       {loading && <p>Analyzing repository...</p>}
-
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {repoData && (
@@ -64,11 +63,7 @@ function App() {
             <li><strong>Open Issues:</strong> {repoData.openIssues}</li>
           </ul>
 
-          <a
-            href={repoData.url}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a href={repoData.url} target="_blank" rel="noreferrer">
             View Repository on GitHub
           </a>
 
@@ -85,17 +80,31 @@ function App() {
 
           {repoData.beginnerSafeFiles && repoData.beginnerSafeFiles.length > 0 && (
             <div style={{ marginTop: "25px" }}>
-              <h3>Recommended First Contribution Files (Git History Based)</h3>
+              <h3>Recommended First Contribution Files</h3>
               <ul>
                 {repoData.beginnerSafeFiles.map((item, index) => (
                   <li key={index}>
-                    {item.file}{" "}
+                    <strong>{item.file}</strong>
+                    <br />
                     <span style={{ color: "#555" }}>
-                      (changes: {item.changeCount})
+                      Changes: {item.changeCount}
                     </span>
+                    <br />
+                    <em>{item.reason}</em>
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {repoData.onboardingGuide && repoData.onboardingGuide.length > 0 && (
+            <div style={{ marginTop: "25px" }}>
+              <h3>Contributor Onboarding Guide</h3>
+              <ol>
+                {repoData.onboardingGuide.map((step, index) => (
+                  <li key={index}>{step}</li>
+                ))}
+              </ol>
             </div>
           )}
         </div>
