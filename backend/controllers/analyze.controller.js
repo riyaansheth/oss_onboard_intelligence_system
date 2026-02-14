@@ -2,7 +2,8 @@ import { fetchRepoDetails } from "../services/github.service.js";
 import { cloneRepo } from "../services/git.service.js";
 import { analyzeStructure } from "../analyzers/structure.analyzer.js";
 import { detectBeginnerZones } from "../analyzers/complexity.analyzer.js";
-import path from "path";
+import { analyzeGitHistory } from "../analyzers/history.analyzer.js";
+import { findBeginnerSafeFiles } from "../analyzers/beginnerSafe.analyzer.js";
 
 export const analyzeRepo = async (req, res) => {
   try {
@@ -22,6 +23,9 @@ export const analyzeRepo = async (req, res) => {
     const structure = analyzeStructure(repoPath);
     const beginnerZones = detectBeginnerZones(structure);
 
+    const gitStats = await analyzeGitHistory(repoPath);
+    const beginnerSafeFiles = findBeginnerSafeFiles(gitStats);
+
     res.json({
       name: repoData.name,
       description: repoData.description,
@@ -30,10 +34,11 @@ export const analyzeRepo = async (req, res) => {
       forks: repoData.forks_count,
       openIssues: repoData.open_issues_count,
       url: repoData.html_url,
-      structure,
-      beginnerZones
+      beginnerZones,
+      beginnerSafeFiles
     });
   } catch (err) {
-    res.status(500).json({ error: "Repository analysis failed" });
+    console.error("ANALYZE ERROR:", err);
+    res.status(500).json({ error: err.message });
   }
 };
