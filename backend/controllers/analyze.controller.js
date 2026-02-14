@@ -4,6 +4,8 @@ import { analyzeStructure } from "../analyzers/structure.analyzer.js";
 import { detectBeginnerZones } from "../analyzers/complexity.analyzer.js";
 import { analyzeGitHistory } from "../analyzers/history.analyzer.js";
 import { findBeginnerSafeFiles } from "../analyzers/beginnerSafe.analyzer.js";
+import { explainBeginnerSafeFiles } from "../analyzers/explanation.analyzer.js";
+import { generateOnboardingGuide } from "../analyzers/onboarding.analyzer.js";
 
 export const analyzeRepo = async (req, res) => {
   try {
@@ -25,6 +27,9 @@ export const analyzeRepo = async (req, res) => {
 
     const gitStats = await analyzeGitHistory(repoPath);
     const beginnerSafeFiles = findBeginnerSafeFiles(gitStats);
+    const explainedFiles = explainBeginnerSafeFiles(beginnerSafeFiles);
+
+    const onboardingGuide = generateOnboardingGuide(repoData.name);
 
     res.json({
       name: repoData.name,
@@ -35,7 +40,8 @@ export const analyzeRepo = async (req, res) => {
       openIssues: repoData.open_issues_count,
       url: repoData.html_url,
       beginnerZones,
-      beginnerSafeFiles
+      beginnerSafeFiles: explainedFiles,
+      onboardingGuide
     });
   } catch (err) {
     console.error("ANALYZE ERROR:", err);
