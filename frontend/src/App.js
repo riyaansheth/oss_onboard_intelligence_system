@@ -74,10 +74,26 @@ function App() {
 
           {repoData.beginnerZones && repoData.beginnerZones.length > 0 && (
             <div style={{ marginTop: "25px" }}>
-              <h3>Beginner Friendly Areas</h3>
+              <h3>Beginner Friendly Areas (Structure Based)</h3>
               <ul>
                 {repoData.beginnerZones.map((file, index) => (
                   <li key={index}>{file}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {repoData.beginnerSafeFiles && repoData.beginnerSafeFiles.length > 0 && (
+            <div style={{ marginTop: "25px" }}>
+              <h3>Recommended First Contribution Files (Git History Based)</h3>
+              <ul>
+                {repoData.beginnerSafeFiles.map((item, index) => (
+                  <li key={index}>
+                    {item.file}{" "}
+                    <span style={{ color: "#555" }}>
+                      (changes: {item.changeCount})
+                    </span>
+                  </li>
                 ))}
               </ul>
             </div>
