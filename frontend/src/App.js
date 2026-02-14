@@ -71,6 +71,17 @@ function App() {
           >
             View Repository on GitHub
           </a>
+
+          {repoData.beginnerZones && repoData.beginnerZones.length > 0 && (
+            <div style={{ marginTop: "25px" }}>
+              <h3>Beginner Friendly Areas</h3>
+              <ul>
+                {repoData.beginnerZones.map((file, index) => (
+                  <li key={index}>{file}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>
